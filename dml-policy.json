@@ -1,0 +1,59 @@
+{
+  "ExecutionRoleArn": "arn:aws:iam::682033508402:role/cmtr-ejb854li-ec2-s-DLMFullAccess",
+  "Description": "MySQL hourly snapshot policy",
+  "State": "ENABLED",
+  "PolicyDetails": {
+    "PolicyType": "EBS_SNAPSHOT_MANAGEMENT",
+    "ResourceTypes": [
+      "INSTANCE"
+    ],
+    "TargetTags": [
+      {
+        "Key": "Name",
+        "Value": "cmtr-ejb854li-ec2-s-instance"
+      }
+    ],
+    "Schedules": [
+  {
+    "Name": "HourlySnapshots",
+    "CreateRule": {
+      "Interval": 1,
+      "IntervalUnit": "HOURS"
+    },
+    "RetainRule": {
+      "Count": 3
+    },
+    "CopyTags": true,
+    "TagsToAdd": [
+      {
+        "Key": "Name",
+        "Value": "cmtr-ejb854li-policy"
+      }
+    ],
+    "Scripts": {
+      "PreScript": {
+        "DocumentName": "cmtr-ejb854li-mysql-snapshot-doc",
+        "Parameters": {
+          "ScriptType": [
+            "pre-script"
+          ]
+        }
+      },
+      "PostScript": {
+        "DocumentName": "cmtr-ejb854li-mysql-snapshot-doc",
+        "Parameters": {
+          "ScriptType": [
+            "post-script"
+          ]
+        }
+      }
+    }
+  }
+],
+
+    "Parameters": {
+      "ExcludeBootVolume": false,
+      "NoReboot": true
+    }
+  }
+}

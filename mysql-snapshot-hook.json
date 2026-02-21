@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Pre and Post script for MySQL snapshot consistency",
+  "parameters": {
+    "command": {
+      "type": "String",
+      "description": "DLM execution phase",
+      "allowedValues": [
+        "pre-script",
+        "post-script"
+      ]
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:runShellScript",
+      "name": "mysqlControl",
+      "inputs": {
+        "runCommand": [
+          "#!/bin/bash",
+          "STATUS=$(systemctl is-active mysql || true)",
+          "echo \"Current MySQL status: $STATUS\"",
+          "if [ \"{{ ScriptType }}\" == \"pre-script\" ]; then",
+          "  if [ \"$STATUS\" == \"active\" ]; then",
+          "    echo \"Stopping MySQL before snapshot...\"",
+          "    sudo systemctl stop mysql",
+          "  else",
+          "    echo \"MySQL already stopped.\"",
+          "  fi",
+          "fi",
+          "",
+          "if [ \"{{ ScriptType }}\" == \"post-script\" ]; then",
+          "  if [ \"$STATUS\" != \"active\" ]; then",
+          "    echo \"Starting MySQL after snapshot...\"",
+          "    sudo systemctl start mysql",
+          "  else",
+          "    echo \"MySQL already running.\"",
+          "  fi",
+          "fi"
+        ]
+      }
+    }
+  ]
+}
