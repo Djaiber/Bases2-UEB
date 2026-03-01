@@ -24,6 +24,7 @@ CREATE TABLE Title (
    PublicationDate DATE NOT NULL,
    CONSTRAINT pk_title PRIMARY KEY (TitleID)
 );
+SELECT * FROM Title;
 
 CREATE TABLE Author (
    AuthorID NUMBER(10) NOT NULL,
