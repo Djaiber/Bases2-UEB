@@ -51,6 +51,7 @@ END sp_saludo_with_default;
 BEGIN 
     sp_saludo_with_default();
 END;
+
 /
 CREATE OR REPLACE PROCEDURE sp_saludo_with_last_friday (param_nombre IN VARCHAR2 DEFAULT 'anonimo', param_month IN DATE SYSDATE)
 /*
@@ -63,19 +64,20 @@ IS
 BEGIN 
     vv_mensaje := 'Hola individuo ' || param_nombre || ' tu papa' ;
     dbms_output.put_line(vv_mensaje);
-END sp_saludo_with_default;
+END sp_saludo_with_last_friday;
 /
 
 
 
 BEGIN 
-    sp_saludo_with_default();
+    sp_saludo_with_last_friday('Jaiber');
 END;
 
 CREATE OR REPLACE PROCEDURE sp_saludar (param_nombre IN VARCHAR2 DEFAULT 'Millos', param_fecha IN DATE DEFAULT SYSDATE)
 --METER PARAMETRO MONTH
+
 /*
-AUTOR: SANTIAGO PINZÓN VÁSQUEZ
+AUTOR: Jaiber Duvan Diaz
 FECHA: 23/02/2026
 DESCRIPCIÓN: Este sp genera un texto saludando a alguien
 */
