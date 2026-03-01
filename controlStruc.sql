@@ -93,5 +93,4 @@ BEGIN
 -- A partir de un numero obtener la raiz cuadrado (Solo cuadrados perfectos)
 -- usa minimo comum multiplo del numero y con simetria
     
-    
  
