@@ -1,0 +1,2 @@
+-- Second chapter of the SQL tutorial
+-- This chapter covers more advanced SQL topics, including joins, subqueries, and aggregate functions.
