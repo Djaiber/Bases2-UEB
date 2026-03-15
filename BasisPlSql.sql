@@ -25,7 +25,7 @@ END;
 DECLARE
     vv_miPrimeraVariable  VARCHAR2(50) := 'Hola mundo';
 BEGIN
-    dbms_output.put_line(vv_miPrimeraVariable);
+    dbms_output.put_line(vv_miPrimeraVariable || ' ' || TO_CHAR(2 + 2));
 END;
 /
 -- Traer los nombres del empleado 110
