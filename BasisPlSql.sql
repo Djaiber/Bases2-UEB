@@ -23,7 +23,7 @@ END;
 /
 --segunda manera de pasar una variable
 DECLARE
-    vv_miPrimeraVariable  VARCHAR2(50) := 'Hola mundo' || 2+2;
+    vv_miPrimeraVariable  VARCHAR2(50) := 'Hola mundo';
 BEGIN
     dbms_output.put_line(vv_miPrimeraVariable);
 END;
