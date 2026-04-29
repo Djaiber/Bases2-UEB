@@ -1,0 +1,65 @@
+use ("sample_airbnb");
+
+
+db.listingsAndReviews.find({
+    $and: [
+    { "address.market": "Porto" }
+    ]
+});
+
+use ("sample_airbnb");
+
+db.listingsAndReviews.find(
+    { "address.market": "Porto" },
+    { "name": 1, "price": 1, "address.market": 1, "_id": 0 },// Projection
+    { sort: { price: -1 }, // Sort by price descending
+      limit: 5 } // Limit to 5 results
+);
+
+// Buscar todos los alojamientos tipo apartamento y con amenidades con wifi y television por cable
+use ("sample_airbnb");
+// $elemMatch operator - Match array elements
+db.listingsAndReviews.find(
+    { 
+        "property_type": "Apartment",
+        "amenities": { $elemMatch: { $in: ["Cable TV", "Wifi"] } } 
+    },
+    { 
+        "name": 1, 
+        "amenities": 1, 
+        "address.country": 1, 
+        "_id": 0 
+    }
+);
+
+// $all operator - Match all elements in an array
+use ("sample_airbnb");
+
+db.listingsAndReviews.find(
+    { 
+        "property_type": "Apartment",
+        "amenities": { $all: ["Cable TV", "Wifi"] } 
+    }, 
+    {
+        "name": 0, 
+        "amenities": 0, 
+        "address.country": 1,
+        "beds": 1,
+        "_id": 0 
+    }
+);
+
+
+db.listingsAndReviews.find(
+    {   
+        "property_type": "Apartment",
+        "amenities": { $all: ["Cable TV", "Wifi"] } 
+    }, 
+    {
+        "name": 0, 
+        "amenities": 0, 
+        "address.country": 1,
+        "beds": 1,
+        "_id": 0 
+    }
+);

@@ -95,6 +95,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_NOMINA IS
     g_param_cache t_param_cache;
     g_cache_loaded BOOLEAN := FALSE;
 
+    PROCEDURE sp_log_nomina(p_operation VARCHAR2, p_detalle VARCHAR2, 
+                            p_empleados_ok NUMBER DEFAULT 0,
+                            p_empleados_error NUMBER DEFAULT 0,
+                            p_monto_total NUMBER DEFAULT 0);
+
     -- =================================================================
     -- CARGA DE PARÁMETROS DESDE TABLA
     -- =================================================================
@@ -327,6 +332,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_NOMINA IS
         v_bruto NUMBER;
         v_ded t_deducciones;
         v_neto NUMBER;
+        v_salario_base_q NUMBER;
+        v_recargos NUMBER;
+        v_bonificacion NUMBER;
+        v_auxilio_transp NUMBER;
+        v_bono_sede NUMBER;
     BEGIN
         SELECT COUNT(*) INTO v_empleado_exist FROM EMPLEADOS WHERE id_empleado = p_id_empleado;
         IF v_empleado_exist = 0 THEN
@@ -356,13 +366,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_NOMINA IS
                 sp_log_nomina('ALERTA_NETO_NEGATIVO', 'Empleado ' || p_id_empleado || ' neto: ' || v_neto, 0, 1, 0);
             END IF;
         END IF;
+        v_salario_base_q := fn_salario_base_q(p_id_empleado, p_id_quincena);
+        v_recargos := fn_recargos(p_id_empleado, p_id_quincena);
+        v_bonificacion := fn_bonificacion(p_id_empleado);
+        v_auxilio_transp := fn_auxilio_transporte(p_id_empleado, p_id_quincena);
+        v_bono_sede := fn_bono_sede(p_id_empleado);
         INSERT INTO LIQUIDACION VALUES (
             SEQ_LIQUIDACION.NEXTVAL, p_id_empleado, p_id_quincena,
-            fn_salario_base_q(p_id_empleado, p_id_quincena),
-            fn_recargos(p_id_empleado, p_id_quincena),
-            fn_bonificacion(p_id_empleado),
-            fn_auxilio_transporte(p_id_empleado, p_id_quincena),
-            fn_bono_sede(p_id_empleado),
+            v_salario_base_q,
+            v_recargos,
+            v_bonificacion,
+            v_auxilio_transp,
+            v_bono_sede,
             v_bruto, v_ded.salud, v_ded.pension, v_ded.fondo_solid,
             v_ded.embargo, v_ded.libranzas, v_ded.aporte_vol, v_ded.total, v_neto, SYSDATE
         );
