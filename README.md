@@ -10,49 +10,59 @@ Contiene todos los scripts, ejercicios y talleres ejecutados durante el semestre
 ```
 Bases2-UEB/
 │
-├── 📄 Oracle SQL — Consultas básicas
-│   ├── kick-off.sql              # Exploración inicial del esquema HR
-│   ├── 00-exercise.sql           # Nombre completo, salario y país del empleado
-│   ├── 01-exercise.sql           # Generación de usernames con SUBSTR
-│   ├── 02-exercise.sql           # Salario y cargo del empleado
-│   └── show_user.sql             # Permisos y privilegios del usuario
+├── 📄 01-oracle-sql
+│   ├── 00-kick-off.sql
+│   ├── 01-employee-salary-country.sql
+│   ├── 02-username-substr.sql
+│   ├── 03-job-salary.sql
+│   ├── 04-joins-avanzados.sql
+│   ├── 05-subconsultas.sql
+│   ├── 06-window-functions.sql
+│   ├── 07-rollup-cube-listagg.sql
+│   └── 08-explain-plan.sql
 │
-├── 📘 PL/SQL — Fundamentos
-│   ├── BasisPlSql.sql            # Variables, tipos de datos, SELECT INTO
-│   ├── controlStruc.sql          # IF/ELSIF, GOTO, número primo
-│   ├── placeholder.sql           # EXECUTE IMMEDIATE con bind variables
-│   ├── exceptions.sql            # Excepciones predefinidas y ZERO_DIVIDE
-│   ├── exceptionsError.sql       # RAISE_APPLICATION_ERROR + DBMS_XPLAN
-│   └── subPrograms.sql           # Stored Procedures, funciones, triggers
+├── 📘 02-plsql-fundamentos
+│   ├── 01-variables-tipos.sql
+│   ├── 02-control-structures.sql
+│   ├── 03-placeholders-dynamic.sql
+│   ├── 04-exceptions.sql
+│   ├── 05-exceptions-raise.sql
+│   ├── 06-subprograms.sql
+│   ├── 07-cursores.sql
+│   └── 08-packages.sql
 │
-├── 📕 PL/SQL — Taller Avanzado (Nómina HotelGroup S.A.)
-│   ├── setup_nomina(1).sql       # Script de setup: tablas, datos, parámetros
-│   ├── Nomina.sql                # Creación del esquema completo (copia de HR)
-│   ├── TallerAvanzado.sql        # Exploración de tablas del taller
-│   ├── plSqlP1.sql               # Punto 1: bloque anónimo de liquidación
-│   ├── tallerplSql.sql           # Puntos 1–8: taller completo
-│   ├── punto4SQLAv.sql           # PKG_NOMINA v1 (package de liquidación)
-│   └── punto4SQLAvV2.sql         # PKG_NOMINA v2 (versión mejorada)
+├── 📕 03-taller-nomina
+│   ├── 00-setup.sql
+│   ├── 01-esquema-nomina.sql
+│   ├── 02-taller-avanzado.sql
+│   ├── 03-bloque-anonimo.sql
+│   ├── 04-taller-completo.sql
+│   ├── 05-pkg-nomina-v1.sql
+│   └── 06-pkg-nomina-v2.sql
 │
-├── 📗 SQL — Learn SQL in a Month of Lunches
-│   ├── chapter1.sql              # Cap 1: tablas, constraints, inserts (SQL Novel)
-│   └── Chapter2.sql              # Cap 2: joins, subqueries, aggregates
+├── 📗 04-sql-book
+│   ├── chapter1-tables-inserts.sql
+│   └── chapter2-joins-agg.sql
 │
-├── 🔗 Conectividad
-│   ├── dblink.sql                # Database Links (TNS y sin tnsnames.ora)
-│   └── ANDromendaSantiago.sql    # Verificación de privilegios en esquema remoto
+├── 🔗 05-connectivity
+│   ├── dblink.sql
+│   ├── andromeda-permisos.sql
+│   ├── show-user-privs.sql
+│   └── utl-smtp-email.sql
 │
-├── 🍃 mongo/ — MongoDB
-│   ├── miprimerscripts.mongodb   # Primeros inserts (Mundial 2026)
-│   ├── use ("mudial2026").mongodb # Selecciones del mundial
-│   ├── mongo101.mongodb          # Filtros: $gte, $and, $nin, $exists, $regex
-│   ├── practice.mongodb          # Queries sobre sample_airbnb (Porto)
-│   ├── playground_Metrical_Zone_Of_Wines.mongodb  # Schema validation + wine reviews
-│   └── aggreate.mongodb          # Aggregation framework (WIP)
+├── 🍃 06-mongodb
+│   ├── 01-crud-basics.mongodb
+│   ├── 02-filters-operators.mongodb
+│   ├── 03-practice-airbnb.mongodb
+│   ├── 04-schema-validation.mongodb
+│   ├── 05-mundial2026.mongodb
+│   ├── 06-aggregations.mongodb
+│   ├── 07-indexes-performance.mongodb
+│   └── 08-transactions.mongodb
 │
-└── ⚙️ Config
-    ├── dml-policy.json           # Política DML
-    └── mysql-snapshot-hook.json   # Hook de snapshot MySQL
+└── ⚙️ config
+    ├── dml-policy.json
+    └── mysql-snapshot-hook.json
 ```
 
 ---
@@ -80,7 +90,7 @@ Bases2-UEB/
 ```sql
 -- Ejemplo rápido
 SET SERVEROUTPUT ON;
-@BasisPlSql.sql
+@02-plsql-fundamentos/01-variables-tipos.sql
 ```
 
 ### MongoDB
@@ -89,10 +99,10 @@ SET SERVEROUTPUT ON;
 2. O ejecutar directamente con `mongosh`:
 
 ```bash
-mongosh < mongo/mongo101.mongodb
+mongosh < 06-mongodb/02-filters-operators.mongodb
 ```
 
-> Para `practice.mongodb` se necesita el dataset `sample_airbnb` (disponible en MongoDB Atlas).
+> Para `03-practice-airbnb.mongodb` se necesita el dataset `sample_airbnb` (disponible en MongoDB Atlas).
 
 ---
 

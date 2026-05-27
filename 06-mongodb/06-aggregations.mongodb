@@ -1,0 +1,181 @@
+/*
+File: 06-aggregations.mongodb
+Purpose: Ejemplos completos del aggregation framework en tienda_db.productos.
+Author: Jaiber Diaz
+Date: 2026-05-27
+Bases de Datos 2 — UEB
+*/
+
+use tienda_db;
+
+db.productos.drop();
+db.proveedores.drop();
+
+db.proveedores.insertMany([
+  { _id: 1, nombre: "TechCorp", ciudad: "Bogota" },
+  { _id: 2, nombre: "CasaModa", ciudad: "Medellin" }
+]);
+
+db.productos.insertMany([
+  {
+    nombre: "Laptop Pro",
+    categoria: "Tecnologia",
+    precio: 3200,
+    costo: 2500,
+    stock: 8,
+    ventas: 25,
+    tags: ["gamer", "trabajo"],
+    proveedor_id: 1
+  },
+  {
+    nombre: "Mouse Inalambrico",
+    categoria: "Tecnologia",
+    precio: 120,
+    costo: 60,
+    stock: 40,
+    ventas: 120,
+    tags: ["oficina", "accesorio"],
+    proveedor_id: 1
+  },
+  {
+    nombre: "Chaqueta Urbana",
+    categoria: "Moda",
+    precio: 260,
+    costo: 140,
+    stock: 15,
+    ventas: 30,
+    tags: ["ropa", "invierno"],
+    proveedor_id: 2
+  },
+  {
+    nombre: "Tenis Runner",
+    categoria: "Moda",
+    precio: 480,
+    costo: 300,
+    stock: 20,
+    ventas: 45,
+    tags: ["deporte", "ropa"],
+    proveedor_id: 2
+  }
+]);
+
+// $match → $group → $sort
+// Total de ventas y promedio de precio por categoria
+
+db.productos.aggregate([
+  { $match: { categoria: "Tecnologia" } },
+  {
+    $group: {
+      _id: "$categoria",
+      vn_total_ventas: { $sum: "$ventas" },
+      vn_prom_precio: { $avg: "$precio" }
+    }
+  },
+  { $sort: { vn_total_ventas: -1 } }
+]);
+
+// $project con campos calculados
+
+db.productos.aggregate([
+  {
+    $project: {
+      _id: 0,
+      nombre: 1,
+      categoria: 1,
+      precio: 1,
+      vn_precio_con_iva: { $multiply: ["$precio", 1.19] },
+      vn_margen: { $subtract: ["$precio", "$costo"] }
+    }
+  }
+]);
+
+// $unwind para explotar arreglos
+
+db.productos.aggregate([
+  { $unwind: "$tags" },
+  { $group: { _id: "$tags", vn_total: { $sum: 1 } } },
+  { $sort: { vn_total: -1 } }
+]);
+
+// $lookup para unir colecciones (JOIN)
+
+db.productos.aggregate([
+  {
+    $lookup: {
+      from: "proveedores",
+      localField: "proveedor_id",
+      foreignField: "_id",
+      as: "proveedor"
+    }
+  },
+  { $unwind: "$proveedor" },
+  {
+    $project: {
+      _id: 0,
+      nombre: 1,
+      categoria: 1,
+      vv_proveedor: "$proveedor.nombre"
+    }
+  }
+]);
+
+// $bucket para rangos de precio
+
+db.productos.aggregate([
+  {
+    $bucket: {
+      groupBy: "$precio",
+      boundaries: [0, 200, 500, 1000, 5000],
+      default: "5000+",
+      output: {
+        vn_total: { $sum: 1 },
+        vn_prom_precio: { $avg: "$precio" }
+      }
+    }
+  }
+]);
+
+// $facet para pipelines en paralelo
+
+db.productos.aggregate([
+  {
+    $facet: {
+      resumen_categoria: [
+        { $group: { _id: "$categoria", vn_total: { $sum: 1 } } },
+        { $sort: { vn_total: -1 } }
+      ],
+      top_ventas: [
+        { $sort: { ventas: -1 } },
+        { $limit: 3 },
+        { $project: { _id: 0, nombre: 1, ventas: 1 } }
+      ]
+    }
+  }
+]);
+
+// $addFields con $switch
+
+db.productos.aggregate([
+  {
+    $addFields: {
+      vv_rango_precio: {
+        $switch: {
+          branches: [
+            { case: { $lt: ["$precio", 200] }, then: "Bajo" },
+            {
+              case: {
+                $and: [
+                  { $gte: ["$precio", 200] },
+                  { $lt: ["$precio", 500] }
+                ]
+              },
+              then: "Medio"
+            }
+          ],
+          default: "Alto"
+        }
+      }
+    }
+  },
+  { $project: { _id: 0, nombre: 1, precio: 1, vv_rango_precio: 1 } }
+]);

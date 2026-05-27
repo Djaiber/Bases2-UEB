@@ -1,0 +1,27 @@
+/*
+File: 07-indexes-performance.mongodb
+Purpose: Índices y rendimiento en MongoDB con productos.
+Author: Jaiber Diaz
+Date: 2026-05-27
+Bases de Datos 2 — UEB
+*/
+
+use tienda_db;
+
+// Índices simples, compuestos y de texto
+
+db.productos.createIndex({ categoria: 1 });
+db.productos.createIndex({ categoria: 1, precio: -1 });
+db.productos.createIndex({ nombre: "text", categoria: "text" });
+
+// explain("executionStats")
+
+db.productos.find({ categoria: "Tecnologia" }).explain("executionStats");
+
+// Ver índices existentes
+
+db.productos.getIndexes();
+
+// Eliminar índices
+
+db.productos.dropIndex("categoria_1");
