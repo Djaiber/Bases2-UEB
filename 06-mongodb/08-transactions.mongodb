@@ -1,0 +1,43 @@
+/*
+File: 08-transactions.mongodb
+Purpose: Transacciones multi-documento con decremento de stock y registro de venta.
+Author: Jaiber Diaz
+Date: 2026-05-27
+Bases de Datos 2 — UEB
+*/
+
+use tienda_db;
+
+const session = db.getMongo().startSession();
+const dbTienda = session.getDatabase("tienda_db");
+
+const vv_producto = "Laptop Pro";
+const vi_cantidad = 1;
+const vn_precio = 3200;
+
+try {
+  session.startTransaction();
+
+  dbTienda.productos.updateOne(
+    { nombre: vv_producto, stock: { $gte: vi_cantidad } },
+    { $inc: { stock: -vi_cantidad } },
+    { session }
+  );
+
+  dbTienda.ventas.insertOne(
+    {
+      producto: vv_producto,
+      cantidad: vi_cantidad,
+      precio: vn_precio,
+      fecha: new Date()
+    },
+    { session }
+  );
+
+  session.commitTransaction();
+} catch (err) {
+  session.abortTransaction();
+  throw err;
+} finally {
+  session.endSession();
+}
